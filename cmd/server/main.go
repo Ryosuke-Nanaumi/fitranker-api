@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"fitranker-api/internal/http/router"
+	"fitranker-api/internal/training"
 )
 
 func main() {
@@ -15,7 +16,9 @@ func main() {
 	}
 	addr := ":" + port
 
-	r := router.New()
+	var trainingService training.Service
+	r := router.New(trainingService)
+	// TODO: service, repositoryの実装を追加
 
 	log.Printf("🚀 Server running at http://localhost%s\n", addr)
 

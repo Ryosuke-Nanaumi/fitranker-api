@@ -6,16 +6,22 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"fitranker-api/internal/http/handler"
+	"fitranker-api/internal/training"
 )
 
-func New() http.Handler {
+func New(trainingService training.Service) http.Handler {
 	r := chi.NewRouter()
 
 	// ヘルスチェック
 	r.Get("/health", handler.Health)
 
-	// 今後ここに /users や /auth などを追加していく
-	// r.Route("/users", func(r chi.Router) { ... })
+	tc := handler.NewTrainingController(trainingService)
+
+	r.Route("/api", func(r chi.Router) {
+		r.Get("/personal/{id}", tc.GetPersonalInfo)
+		r.Get("/ranking", tc.GetRanking)
+		r.Post("/training-records", tc.PostTrainingRecords)
+	})
 
 	return r
 }
