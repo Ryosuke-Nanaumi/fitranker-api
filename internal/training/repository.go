@@ -3,11 +3,12 @@ package training
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 type Repository interface {
 	GetUserById(ctx context.Context, id int64) (*User, error)
-	GetPoint(ctx context.Context) (*PointRecord, error)
+	GetPoint(ctx context.Context, id int64, date *time.Time) ([]PointRecord, error)
 	// GetRanking sliceは参照型、配列は値
 	GetRanking(ctx context.Context) ([]Ranking, error)
 	PostTrainingRecords(ctx context.Context, in PostTrainingRecordsInput) (int64, error)
@@ -29,10 +30,9 @@ func (r *repository) GetUserById(ctx context.Context, id int64) (*User, error) {
 	return &User{ID: id, Name: "foo"}, nil
 }
 
-func (r *repository) GetPoint(ctx context.Context) (*PointRecord, error) {
-	return &PointRecord{
-		Amount: 0,
-		Point:  0,
+func (r *repository) GetPoint(ctx context.Context, id int64, date *time.Time) ([]PointRecord, error) {
+	return []PointRecord{
+		{Amount: 0, Point: 0},
 	}, nil
 }
 
