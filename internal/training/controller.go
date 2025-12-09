@@ -1,4 +1,4 @@
-package handler
+package training
 
 import (
 	"encoding/json"
@@ -6,20 +6,19 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
-
-	"fitranker-api/internal/training"
 )
 
-type TrainingController struct {
-	service training.Service
+// Controller これはDIしないため直接structを使用する
+type Controller struct {
+	service Service
 }
 
-func NewTrainingController(s training.Service) *TrainingController {
-	return &TrainingController{service: s}
+func NewTrainingController(s Service) *Controller {
+	return &Controller{service: s}
 }
 
 // GetPersonalInfo (c *TrainingController)のように書くことで、TrainingControllerの実装みたいな感じになる
-func (c *TrainingController) GetPersonalInfo(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) GetPersonalInfo(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "id")
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
@@ -36,7 +35,7 @@ func (c *TrainingController) GetPersonalInfo(w http.ResponseWriter, r *http.Requ
 	writeJSON(w, http.StatusOK, person)
 }
 
-func (c *TrainingController) GetRanking(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) GetRanking(w http.ResponseWriter, r *http.Request) {
 	ranking, err := c.service.GetRanking(r.Context())
 	if err != nil {
 		http.Error(w, "failed to get ranking", http.StatusInternalServerError)
@@ -53,14 +52,14 @@ type postTrainingRecordsRequest struct {
 	ID         int64   `json:"id"`
 }
 
-func (c *TrainingController) PostTrainingRecords(w http.ResponseWriter, r *http.Request) {
+func (c *Controller) PostTrainingRecords(w http.ResponseWriter, r *http.Request) {
 	var body postTrainingRecordsRequest
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
 	}
 
-	result, err := c.service.PostTrainingRecords(r.Context(), training.PostTrainingRecordsInput{
+	result, err := c.service.PostTrainingRecords(r.Context(), PostTrainingRecordsInput{
 		ExerciseID: body.ExerciseID,
 		Date:       body.Date,
 		Amount:     body.Amount,

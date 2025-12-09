@@ -15,7 +15,7 @@ func New(trainingService training.Service) http.Handler {
 	// ヘルスチェック
 	r.Get("/health", handler.Health)
 
-	tc := handler.NewTrainingController(trainingService)
+	tc := training.NewTrainingController(trainingService)
 
 	r.Route("/api", func(r chi.Router) {
 		r.Get("/personal/{id}", tc.GetPersonalInfo)
