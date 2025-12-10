@@ -77,8 +77,7 @@ func calcPoint(records []PointRecord) int64 {
 }
 
 func (s *service) GetRanking(ctx context.Context) ([]Ranking, error) {
-	//TODO implement me
-	panic("implement me")
+	return s.repository.GetRanking(ctx)
 }
 
 func (s *service) PostTrainingRecords(ctx context.Context, in PostTrainingRecordsInput) (*PostTrainingRecordsResult, error) {

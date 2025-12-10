@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"log"
 	"time"
 )
 
@@ -102,7 +103,7 @@ func (r *repository) GetRanking(ctx context.Context) ([]Ranking, error) {
 		JOIN users AS u ON tr.user_id = u.id
 		JOIN exercises AS e ON tr.exercise_id = e.id
 		GROUP BY tr.user_id, u.name
-		ORDER BY points DESC 
+		ORDER BY point DESC 
 	`
 	// 行を返すクエリを実行する
 	rows, err := r.db.QueryContext(ctx, q)
@@ -112,8 +113,7 @@ func (r *repository) GetRanking(ctx context.Context) ([]Ranking, error) {
 	defer func() {
 		err := rows.Close()
 		if err != nil {
-			_ = fmt.Errorf("getPoint Error")
-			return
+			log.Printf("rows close error: %v", err)
 		}
 	}()
 
