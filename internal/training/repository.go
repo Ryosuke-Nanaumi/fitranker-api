@@ -129,5 +129,15 @@ func (r *repository) GetRanking(ctx context.Context) ([]Ranking, error) {
 }
 
 func (r *repository) PostTrainingRecords(ctx context.Context, in PostTrainingRecordsInput) (int64, error) {
-	return 1, nil
+	const q = `
+		INSERT INTO training_records (user_id, exercise_id, date, amount) 
+		VALUES ($1, $2, $3, $4)
+		RETURNING id
+	`
+	var id int64
+	err := r.db.QueryRowContext(ctx, q, in.ID, in.ExerciseID, in.Date, in.Amount).Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
 }

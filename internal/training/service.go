@@ -81,6 +81,10 @@ func (s *service) GetRanking(ctx context.Context) ([]Ranking, error) {
 }
 
 func (s *service) PostTrainingRecords(ctx context.Context, in PostTrainingRecordsInput) (*PostTrainingRecordsResult, error) {
-	//TODO implement me
-	panic("implement me")
+	id, err := s.repository.PostTrainingRecords(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+
+	return &PostTrainingRecordsResult{id}, nil
 }
