@@ -96,9 +96,36 @@ func (r *repository) GetPoint(ctx context.Context, id int64, date *time.Time) ([
 }
 
 func (r *repository) GetRanking(ctx context.Context) ([]Ranking, error) {
-	return []Ranking{
-		{ID: 1, Name: "Alice", Point: 120},
-	}, nil
+	const q = `
+		SELECT tr.user_id, u.name, SUM(e.point * tr.amount) AS point
+		FROM training_records AS tr
+		JOIN users AS u ON tr.user_id = u.id
+		JOIN exercises AS e ON tr.exercise_id = e.id
+		GROUP BY tr.user_id, u.name
+		ORDER BY points DESC 
+	`
+	// 行を返すクエリを実行する
+	rows, err := r.db.QueryContext(ctx, q)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		err := rows.Close()
+		if err != nil {
+			_ = fmt.Errorf("getPoint Error")
+			return
+		}
+	}()
+
+	var result []Ranking
+	for rows.Next() {
+		var rank Ranking
+		if err := rows.Scan(&rank.ID, &rank.Name, &rank.Point); err != nil {
+			return nil, err
+		}
+		result = append(result, rank)
+	}
+	return result, err
 }
 
 func (r *repository) PostTrainingRecords(ctx context.Context, in PostTrainingRecordsInput) (int64, error) {
