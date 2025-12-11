@@ -45,6 +45,22 @@ func (c *Controller) GetRanking(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, ranking)
 }
 
+func (c *Controller) GetTrainingRecords(w http.ResponseWriter, r *http.Request) {
+	idParam := chi.URLParam(r, "id")
+	id, err := strconv.ParseInt(idParam, 10, 64)
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest)
+		return
+	}
+
+	records, err := c.service.GetTrainingRecords(r.Context(), id)
+	if err != nil {
+		http.Error(w, "failed to get training_records", http.StatusInternalServerError)
+		return
+	}
+	writeJSON(w, http.StatusOK, records)
+}
+
 func (c *Controller) PostTrainingRecords(w http.ResponseWriter, r *http.Request) {
 	var body PostTrainingRecordsInput
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {

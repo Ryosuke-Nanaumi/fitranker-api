@@ -14,6 +14,7 @@ type Repository interface {
 	GetPoint(ctx context.Context, id int64, date *time.Time) ([]PointRecord, error)
 	// GetRanking sliceは参照型、配列は値
 	GetRanking(ctx context.Context) ([]Ranking, error)
+	GetTrainingRecords(ctx context.Context, id int64) ([]Record, error)
 	PostTrainingRecords(ctx context.Context, in PostTrainingRecordsInput) (int64, error)
 }
 
@@ -93,6 +94,36 @@ func (r *repository) GetPoint(ctx context.Context, id int64, date *time.Time) ([
 		return nil, err
 	}
 
+	return result, err
+}
+
+func (r *repository) GetTrainingRecords(ctx context.Context, id int64) ([]Record, error) {
+	const q = `
+		SELECT id, exercise_id, amount, date
+		FROM training_records
+		WHERE user_id = $1
+		ORDER BY date DESC, id DESC
+	`
+
+	rows, err := r.db.QueryContext(ctx, q, id)
+	if err != nil {
+		return nil, err
+	}
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+			_ = fmt.Errorf("getPoint Error")
+		}
+	}(rows)
+
+	var result []Record
+	for rows.Next() {
+		var r Record
+		if err := rows.Scan(&r.ID, &r.ExerciseID, &r.Amount, &r.Date); err != nil {
+			return nil, err
+		}
+		result = append(result, r)
+	}
 	return result, err
 }
 

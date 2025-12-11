@@ -9,6 +9,14 @@ type PersonalUser struct {
 	TodaysPoint int64  `json:"todaysPoint"`
 }
 
+// Record あとでPostTrainingRecordsInputも統合したい
+type Record struct {
+	ExerciseID int64   `json:"exerciseId"`
+	Date       string  `json:"date"`
+	Amount     float64 `json:"amount"`
+	ID         int64   `json:"trainingId"`
+}
+
 type PostTrainingRecordsInput struct {
 	ExerciseID int64   `json:"exerciseId"`
 	Date       string  `json:"date"`

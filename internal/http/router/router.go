@@ -20,6 +20,7 @@ func New(trainingService training.Service) http.Handler {
 	r.Route("/api", func(r chi.Router) {
 		r.Get("/personal/{id}", tc.GetPersonalInfo)
 		r.Get("/ranking", tc.GetRanking)
+		r.Get("/training-records/{id}", tc.GetTrainingRecords)
 		r.Post("/training-records", tc.PostTrainingRecords)
 	})
 

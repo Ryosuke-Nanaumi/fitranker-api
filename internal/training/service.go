@@ -11,6 +11,7 @@ import (
 type Service interface {
 	GetPersonalInfo(ctx context.Context, id int64) (*PersonalUser, error)
 	GetRanking(ctx context.Context) ([]Ranking, error)
+	GetTrainingRecords(ctx context.Context, id int64) ([]Record, error)
 	PostTrainingRecords(ctx context.Context, in PostTrainingRecordsInput) (*PostTrainingRecordsResult, error)
 }
 
@@ -74,6 +75,10 @@ func calcPoint(records []PointRecord) int64 {
 		total += r.Amount * r.Point
 	}
 	return total
+}
+
+func (s *service) GetTrainingRecords(ctx context.Context, id int64) ([]Record, error) {
+	return s.repository.GetTrainingRecords(ctx, id)
 }
 
 func (s *service) GetRanking(ctx context.Context) ([]Ranking, error) {
