@@ -14,6 +14,7 @@ type Record struct {
 	ExerciseID int64   `json:"exerciseId"`
 	Date       string  `json:"date"`
 	Amount     float64 `json:"amount"`
+	Point      int64   `json:"point"`
 	ID         int64   `json:"trainingId"`
 }
 

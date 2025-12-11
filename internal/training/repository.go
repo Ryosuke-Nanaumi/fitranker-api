@@ -99,8 +99,10 @@ func (r *repository) GetPoint(ctx context.Context, id int64, date *time.Time) ([
 
 func (r *repository) GetTrainingRecords(ctx context.Context, id int64) ([]Record, error) {
 	const q = `
-		SELECT id, exercise_id, amount, date
-		FROM training_records
+		SELECT tr.id, tr.exercise_id, tr.amount, (e.point * tr.amount) AS point, tr.date
+		FROM training_records AS tr
+		JOIN exercises AS e
+		ON tr.exercise_id = e.id
 		WHERE user_id = $1
 		ORDER BY date DESC, id DESC
 	`
@@ -119,7 +121,7 @@ func (r *repository) GetTrainingRecords(ctx context.Context, id int64) ([]Record
 	var result []Record
 	for rows.Next() {
 		var r Record
-		if err := rows.Scan(&r.ID, &r.ExerciseID, &r.Amount, &r.Date); err != nil {
+		if err := rows.Scan(&r.ID, &r.ExerciseID, &r.Amount, &r.Point, &r.Date); err != nil {
 			return nil, err
 		}
 		result = append(result, r)
