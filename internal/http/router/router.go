@@ -22,6 +22,7 @@ func New(trainingService training.Service) http.Handler {
 		r.Get("/ranking", tc.GetRanking)
 		r.Get("/training-records/{id}", tc.GetTrainingRecords)
 		r.Post("/training-records", tc.PostTrainingRecords)
+		r.Delete("/training-records/{id}", tc.DeleteTrainingRecords)
 	})
 
 	return r

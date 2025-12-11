@@ -82,6 +82,22 @@ func (c *Controller) PostTrainingRecords(w http.ResponseWriter, r *http.Request)
 	writeJSON(w, http.StatusCreated, result)
 }
 
+func (c *Controller) DeleteTrainingRecords(w http.ResponseWriter, r *http.Request) {
+	idParam := chi.URLParam(r, "id")
+	id, err := strconv.ParseInt(idParam, 10, 64)
+	if err != nil {
+		http.Error(w, "invalid id", http.StatusBadRequest)
+		return
+	}
+
+	err = c.service.DeleteTrainingRecords(r.Context(), id)
+	if err != nil {
+		http.Error(w, "failed to get training_records", http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
 func writeJSON(w http.ResponseWriter, status int, v any) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(status)

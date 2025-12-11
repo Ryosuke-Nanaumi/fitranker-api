@@ -16,6 +16,7 @@ type Repository interface {
 	GetRanking(ctx context.Context) ([]Ranking, error)
 	GetTrainingRecords(ctx context.Context, id int64) ([]Record, error)
 	PostTrainingRecords(ctx context.Context, in PostTrainingRecordsInput) (int64, error)
+	DeleteTrainingRecord(ctx context.Context, id int64) error
 }
 
 type repository struct {
@@ -173,4 +174,9 @@ func (r *repository) PostTrainingRecords(ctx context.Context, in PostTrainingRec
 		return 0, err
 	}
 	return id, nil
+}
+
+func (r *repository) DeleteTrainingRecord(ctx context.Context, id int64) error {
+	_, err := r.db.ExecContext(ctx, "DELETE FROM training_records WHERE id = $1", id)
+	return err
 }

@@ -13,6 +13,7 @@ type Service interface {
 	GetRanking(ctx context.Context) ([]Ranking, error)
 	GetTrainingRecords(ctx context.Context, id int64) ([]Record, error)
 	PostTrainingRecords(ctx context.Context, in PostTrainingRecordsInput) (*PostTrainingRecordsResult, error)
+	DeleteTrainingRecords(ctx context.Context, id int64) error
 }
 
 // Repositoryインターフェースはそれ自体が参照型
@@ -92,4 +93,12 @@ func (s *service) PostTrainingRecords(ctx context.Context, in PostTrainingRecord
 	}
 
 	return &PostTrainingRecordsResult{id}, nil
+}
+
+func (s *service) DeleteTrainingRecords(ctx context.Context, id int64) error {
+	err := s.repository.DeleteTrainingRecord(ctx, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
