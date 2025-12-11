@@ -45,15 +45,8 @@ func (c *Controller) GetRanking(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, ranking)
 }
 
-type postTrainingRecordsRequest struct {
-	ExerciseID int64   `json:"exerciseId"`
-	Date       string  `json:"date"`
-	Amount     float64 `json:"amount"`
-	ID         int64   `json:"id"`
-}
-
 func (c *Controller) PostTrainingRecords(w http.ResponseWriter, r *http.Request) {
-	var body postTrainingRecordsRequest
+	var body PostTrainingRecordsInput
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return

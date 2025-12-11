@@ -13,7 +13,7 @@ type PostTrainingRecordsInput struct {
 	ExerciseID int64   `json:"exerciseId"`
 	Date       string  `json:"date"`
 	Amount     float64 `json:"amount"`
-	ID         int64   `json:"id"`
+	ID         int64   `json:"userId"`
 }
 
 type PostTrainingRecordsResult struct {
