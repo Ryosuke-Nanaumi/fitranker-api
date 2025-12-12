@@ -35,9 +35,9 @@ type User struct {
 }
 
 type Ranking struct {
-	ID    int64
-	Name  string
-	Point int64
+	ID    int64  `json:"id"`
+	Name  string `json:"name"`
+	Point int64  `json:"point"`
 }
 
 type PointRecord struct {
